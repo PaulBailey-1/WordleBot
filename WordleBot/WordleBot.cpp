@@ -4,27 +4,45 @@
 #include <algorithm>
 #include <thread>
 #include <chrono>
+#include <mutex>
 
 #include "InfoCase.h"
 #include "WordInfo.h"
 
-std::vector<WordInfo*> words;
+#define THREAD_COUNT 2
 
-void createWord(std::string word) {
-    words.push_back(new WordInfo(word));
-    //std::cout << "Created " << word << "\n";
+std::vector<std::string>* wordList;
+std::vector<WordInfo*> words;
+int wordCalcIndex = 0;
+std::mutex indexMux;
+std::mutex wordsMux;
+
+void threadRunner() {
+    while (words.size() < wordList->size()) {
+
+        indexMux.lock();
+        int index = wordCalcIndex;
+        wordCalcIndex++;
+        indexMux.unlock();
+
+        WordInfo* newWord = new WordInfo(wordList->at(index));
+
+        wordsMux.lock();
+        words.push_back(newWord);
+        wordsMux.unlock();
+    }
 }
 
 int main() {
 
     std::ifstream wordListFile("WordList.txt");
-    std::vector<std::string>* wordList = new std::vector<std::string>();
+    wordList = new std::vector<std::string>();
     WordInfo::wordList = wordList;
     std::string word;
 
     std::cout << "Loading words...\n";
     int lim = 0;
-    while (std::getline(wordListFile, word) && lim < 100) {
+    while (std::getline(wordListFile, word) && lim < 10) {
         wordList->push_back(word);
         lim++;
     }
@@ -35,19 +53,15 @@ int main() {
     std::cout << "Computing word information...\n";
     auto start = std::chrono::high_resolution_clock::now();
 
-    int index = 0;
-    while (words.size() < wordList->size()) {
-        while (workers.size() < 16 && index < wordList->size()) {
-            workers.push_back(std::thread(createWord, wordList->at(index)));
-            index++;
-        }
-        for (std::thread& worker : workers) {
-            if (worker.joinable()) {
-                worker.join();
-            }
-        }
-        workers.clear();
+    for (int i = 0; i < THREAD_COUNT; i++) {
+        workers.push_back(std::thread(threadRunner));
     }
+    for (std::thread& worker : workers) {
+        if (worker.joinable()) {
+            worker.join();
+        }
+    }
+
     auto end = std::chrono::high_resolution_clock::now();
     double time = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
     std::cout << time << "\n";
