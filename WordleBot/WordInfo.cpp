@@ -9,14 +9,14 @@ WordInfo::WordInfo(std::string word) : _word(word), _score(0.0) {
 	}
 
 	int cases[5] = { 0, 0, 0, 0, 0 };
-	while (1) {
+	while (true) {
+
 		InfoCase info;
 		info.addWord(_word, (InfoCase::Case*) cases);
 		double prob = 0.0;
 		for (int i = 0; i < wordList->size(); i++) {
 			info.checkWord(wordList->at(i)) ? prob++ : NULL;
 		}
-
 
 		if (prob != 0.0) {
 			prob /= wordList->size();
@@ -35,8 +35,6 @@ WordInfo::WordInfo(std::string word) : _word(word), _score(0.0) {
 		if (cases[4] == 3) {
 			break;
 		}
-
-		break;
 	}
 }
 

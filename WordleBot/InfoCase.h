@@ -2,6 +2,10 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <chrono>
+#include <iostream>
+
+#define MAX_WORD_COUNT 13000
 
 struct Form;
 
@@ -15,6 +19,7 @@ public:
 		NEAR
 	};
 
+	InfoCase();
 	~InfoCase();
 	
 	void addWord(std::string word, Case data[]);
@@ -22,8 +27,8 @@ public:
 
 private:
 
-	std::vector<Form*> _data;
-
+	Form* _data[MAX_WORD_COUNT];
+	int _dataCount;
 };
 
 struct Form {

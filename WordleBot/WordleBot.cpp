@@ -9,28 +9,45 @@
 #include "InfoCase.h"
 #include "WordInfo.h"
 
-#define THREAD_COUNT 2
+#define THREAD_COUNT 1
 
+std::vector<std::thread> workers;
 std::vector<std::string>* wordList;
 std::vector<WordInfo*> words;
 int wordCalcIndex = 0;
-std::mutex indexMux;
+std::mutex wordIdxMux;
 std::mutex wordsMux;
+std::mutex coutMux;
 
-void threadRunner() {
-    while (words.size() < wordList->size()) {
+void threadRunner(int workerInx) {
+    std::thread::id id = workers[workerInx].get_id();
+    coutMux.lock();
+    std::cout << "Thread started - " << id << "\n";
+    coutMux.unlock();
+    while (true) {
 
-        indexMux.lock();
-        int index = wordCalcIndex;
+        wordsMux.lock();
+        if (wordCalcIndex >= wordList->size()) {
+            wordsMux.unlock();
+            break;
+        }
+        wordsMux.unlock();
+
+        wordIdxMux.lock();
+        std::string word = wordList->at(wordCalcIndex);
+
         wordCalcIndex++;
-        indexMux.unlock();
+        wordIdxMux.unlock();
 
-        WordInfo* newWord = new WordInfo(wordList->at(index));
+        WordInfo* newWord = new WordInfo(word);
 
         wordsMux.lock();
         words.push_back(newWord);
         wordsMux.unlock();
     }
+    coutMux.lock();
+    std::cout << "Thread ended - " << id << "\n";
+    coutMux.unlock();
 }
 
 int main() {
@@ -48,24 +65,16 @@ int main() {
     }
     std::cout << "Done\n";
 
-    std::vector<std::thread> workers;
-
     std::cout << "Computing word information...\n";
-    auto start = std::chrono::high_resolution_clock::now();
 
     for (int i = 0; i < THREAD_COUNT; i++) {
-        workers.push_back(std::thread(threadRunner));
+        workers.push_back(std::thread(threadRunner, i));
     }
     for (std::thread& worker : workers) {
         if (worker.joinable()) {
             worker.join();
         }
     }
-
-    auto end = std::chrono::high_resolution_clock::now();
-    double time = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
-    std::cout << time << "\n";
-
 
     std::cout << "Done\n";
 

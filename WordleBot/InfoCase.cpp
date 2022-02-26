@@ -1,20 +1,29 @@
 #include "InfoCase.h"
 
+InfoCase::InfoCase() {
+	_dataCount = 0;
+}
+
 InfoCase::~InfoCase() {
-	for (Form* form : _data) {
-		free(form);
+	for (int i = 0; i < _dataCount; i++) {
+		free(_data[i]);
 	}
 }
 
 void InfoCase::addWord(std::string word, Case data[]) {
+	auto start = std::chrono::high_resolution_clock::now();
 	for (int i = 0; i < word.length(); i++) {
-		_data.push_back(new Form(word[i], i, data[i]));
+		_data[_dataCount] = new Form(word[i], i, data[i]);
+		_dataCount++;
 	}
+	auto end = std::chrono::high_resolution_clock::now();
+	double time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+	std::cout << time << "\n";
 }
 
 bool InfoCase::checkWord(std::string test) {
 
-	for (int i = 0; i < _data.size(); i++) {
+	for (int i = 0; i < _dataCount; i++) {
 		Form* form = _data[i];
 		switch (form->data) {
 			case PRESENT:
