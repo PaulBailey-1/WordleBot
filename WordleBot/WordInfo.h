@@ -6,6 +6,8 @@
 #include <chrono>
 
 #include "InfoCase.h"
+#include "WordList.h"
+#include "FormList.h"
 
 class WordInfo {
 
@@ -18,8 +20,6 @@ public:
 	std::string getWord() { return _word; }
 
 	static bool compareWordInfos(WordInfo* w1, WordInfo* w2);
-
-	static std::vector<std::string>* wordList;
 
 private:
 

@@ -1,25 +1,24 @@
 #include "WordInfo.h"
 
-std::vector<std::string>*  WordInfo::wordList = nullptr;
-
 WordInfo::WordInfo(std::string word) : _word(word), _score(0.0) {
-
-	if (wordList == nullptr) {
+	if (WordList::wordList == nullptr) {
 		throw std::runtime_error("Error: No word list found\n");
 	}
 
 	int cases[5] = { 0, 0, 0, 0, 0 };
+	double count = 0;
 	while (true) {
 
 		InfoCase info;
-		info.addWord(_word, (InfoCase::Case*) cases);
+		info.addWord(_word, (State*) cases);
 		double prob = 0.0;
-		for (int i = 0; i < wordList->size(); i++) {
-			info.checkWord(wordList->at(i)) ? prob++ : NULL;
+		for (int i = 0; i < WordList::length; i++) {
+			info.checkWord(WordList::wordList[i]) ? prob++ : NULL;
 		}
+		count += prob;
 
 		if (prob != 0.0) {
-			prob /= wordList->size();
+			prob /= WordList::length;
 			prob *= -log2l(prob);
 			_score += prob;
 		}
@@ -36,6 +35,7 @@ WordInfo::WordInfo(std::string word) : _word(word), _score(0.0) {
 			break;
 		}
 	}
+	//std::cout << count << "\n";
 }
 
 bool WordInfo::compareWordInfos(WordInfo* w1, WordInfo* w2) {

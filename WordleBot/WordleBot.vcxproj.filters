@@ -24,12 +24,30 @@
     <ClCompile Include="WordInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WordList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FormList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CaseList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InfoCase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WordInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WordList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FormList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CaseList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

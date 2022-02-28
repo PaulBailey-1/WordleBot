@@ -5,39 +5,22 @@
 #include <chrono>
 #include <iostream>
 
-#define MAX_WORD_COUNT 13000
+#include "FormList.h"
 
-struct Form;
+const int MAX_FORMS = 10;
 
 class InfoCase {
 
 public:
 
-	enum Case {
-		PRESENT,
-		NOT_PRESENT,
-		NEAR
-	};
-
 	InfoCase();
 	~InfoCase();
 	
-	void addWord(std::string word, Case data[]);
+	void addWord(std::string word, State data[]);
 	bool checkWord(std::string test);
 
 private:
 
-	Form* _data[MAX_WORD_COUNT];
+	Form* _data[MAX_FORMS];
 	int _dataCount;
-};
-
-struct Form {
-
-	Form(char letter_, int place_, InfoCase::Case data_) :
-		letter(letter_), place(place_), data(data_) {}
-
-	char letter;
-	int place;
-	InfoCase::Case data;
-
 };

@@ -10,35 +10,32 @@ InfoCase::~InfoCase() {
 	}
 }
 
-void InfoCase::addWord(std::string word, Case data[]) {
-	auto start = std::chrono::high_resolution_clock::now();
+void InfoCase::addWord(std::string word, State data[]) {
 	for (int i = 0; i < word.length(); i++) {
 		_data[_dataCount] = new Form(word[i], i, data[i]);
 		_dataCount++;
 	}
-	auto end = std::chrono::high_resolution_clock::now();
-	double time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-	std::cout << time << "\n";
 }
 
 bool InfoCase::checkWord(std::string test) {
+	auto start = std::chrono::high_resolution_clock::now();
 
-	for (int i = 0; i < _dataCount; i++) {
+	for (int i = 0; i < MAX_FORMS; i++) {
 		Form* form = _data[i];
-		switch (form->data) {
-			case PRESENT:
+		switch (form->state) {
+			case State::PRESENT:
 				if (test[form->place] != form->letter) {
 					return false;
 				}
 				break;
-			case NOT_PRESENT:
+			case State::NOT_PRESENT:
 				for (int i = 0; i < test.length(); i++) {
 					if (test[i] == form->letter) {
 						return false;
 					}
 				}
 				break;
-			case NEAR:
+			case State::NEAR:
 				if (test[form->place] == form->letter) {
 					return false;
 				}
@@ -54,5 +51,9 @@ bool InfoCase::checkWord(std::string test) {
 				break;
 		}
 	}
+	auto end = std::chrono::high_resolution_clock::now();
+	double time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+	std::cout << time << "\n";
+
 	return true;
 }
