@@ -55,7 +55,7 @@ void threadRunner(int workerInx) {
 
 int main() {
 
-    WordList::load("WordList.txt", 10);
+    WordList::load("WordList.txt");
     FormList::load("FormList.txt");
     CaseList::load("CaseList.txt");
 

@@ -2,36 +2,72 @@
 
 #include "WordList.h"
 
-//Case CaseList::caseList[WORD_COUNT];
+Case CaseList::caseList[WORD_COUNT];
 
 void CaseList::load(std::string fileName) {
     std::ifstream caseListFileIn(fileName);
-    if (caseListFileIn.good()) {
-        std::cout << "Loading Cases...\n";
-        std::string line;
-        int caseIdx = 0;
-        std::getline(caseListFileIn, line);
-        while (std::getline(caseListFileIn, line)) {
-            Case aCase;
-            aCase.word = line;
-            int formIdx = 0;
-            while (std::getline(caseListFileIn, line) && !line.compare("-")) {
-                aCase.validForms[formIdx] = stoi(line);
-                formIdx++;
-            }
-            caseList[caseIdx] = aCase;
-            caseIdx++;
-        }
-        caseIdx < WORD_COUNT ? throw std::runtime_error("Case data invalid") : NULL;
-    }
-    else {
+
+    if(!caseListFileIn.good()) {
         std::cout << "Creating Cases...\n";
         std::ofstream caseListFile(fileName);
-        for (std::string word : WordList::wordList) {
+		for (int i = 0; i < WordList::length; i++) {
+			std::string word = WordList::wordList[i];
             caseListFile << "-\n" << word << "\n";
+			for (int formIdx = 0; formIdx < FORM_COUNT; formIdx++) {
+				Form form = FormList::formList[formIdx];
+				bool valid = true;
+				switch (form.state) {
+					case State::PRESENT:
+						if (word[form.place] != form.letter) {
+							valid = false;
+						}
+						break;
+					case State::NOT_PRESENT:
+						for (int i = 0; i < word.length(); i++) {
+							if (word[i] == form.letter) {
+								valid = false;
+							}
+						}
+						break;
+					case State::NEAR:
+						if (word[form.place] == form.letter) {
+							valid = false;
+						}
+						bool present = false;
+						for (int i = 0; i < word.length(); i++) {
+							if (word[i] == form.letter) {
+								present = true;
+							}
+						}
+						if (!present) {
+							valid = false;
+						}
+						break;
+				}
+				if (valid) {
+					caseListFile << formIdx << "\n";
+				}
+			}
         }
         caseListFile.close();
     }
+
+	std::cout << "Loading Cases...\n";
+	std::string line;
+	int caseIdx = 0;
+	std::getline(caseListFileIn, line);
+	while (std::getline(caseListFileIn, line)) {
+		Case aCase;
+		aCase.word = line;
+		int formIdx = 0;
+		while (std::getline(caseListFileIn, line) && line != "-") {
+			aCase.validForms[formIdx] = stoi(line);
+			formIdx++;
+		}
+		caseList[caseIdx] = aCase;
+		caseIdx++;
+	}
+	caseIdx < WordList::length ? throw std::runtime_error("Case data invalid") : NULL;
 
     caseListFileIn.close();
     std::cout << "Done\n";
