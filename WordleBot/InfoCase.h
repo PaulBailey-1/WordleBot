@@ -14,13 +14,12 @@ class InfoCase {
 public:
 
 	InfoCase();
-	~InfoCase();
 	
 	void addWord(std::string word, State data[]);
-	bool checkWord(std::string test);
+	bool checkWord(int testIdx);
 
 private:
 
-	Form* _data[MAX_FORMS];
-	int _dataCount;
+	int _forms[MAX_FORMS];
+	int _formCount;
 };

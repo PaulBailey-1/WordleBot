@@ -6,8 +6,10 @@
 #include "WordList.h"
 
 struct Case {
+	Case() : validForms{0} {}
 	std::string word;
 	int validForms[FORM_COUNT];
+	int validFormCount;
 };
 
 class CaseList

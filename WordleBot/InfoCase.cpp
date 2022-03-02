@@ -1,59 +1,30 @@
 #include "InfoCase.h"
 
-InfoCase::InfoCase() {
-	_dataCount = 0;
-}
+#include "CaseList.h"
 
-InfoCase::~InfoCase() {
-	for (int i = 0; i < _dataCount; i++) {
-		free(_data[i]);
-	}
-}
+InfoCase::InfoCase() : _formCount(0), _forms{0} {}
 
 void InfoCase::addWord(std::string word, State data[]) {
-	for (int i = 0; i < word.length(); i++) {
-		_data[_dataCount] = new Form(word[i], i, data[i]);
-		_dataCount++;
+	for (unsigned int i = 0; i < word.length(); i++) {
+		_forms[_formCount] = (word[i] - 'a') * 15 + i * 3 + (int) data[i];
+		_formCount++;
 	}
 }
 
-bool InfoCase::checkWord(std::string test) {
-	auto start = std::chrono::high_resolution_clock::now();
+bool InfoCase::checkWord(int testIdx) {
 
-	for (int i = 0; i < MAX_FORMS; i++) {
-		Form* form = _data[i];
-		switch (form->state) {
-			case State::PRESENT:
-				if (test[form->place] != form->letter) {
-					return false;
-				}
-				break;
-			case State::NOT_PRESENT:
-				for (int i = 0; i < test.length(); i++) {
-					if (test[i] == form->letter) {
-						return false;
-					}
-				}
-				break;
-			case State::NEAR:
-				if (test[form->place] == form->letter) {
-					return false;
-				}
-				bool present = false;
-				for (int i = 0; i < test.length(); i++) {
-					if (test[i] == form->letter) {
-						present = true;
-					}
-				}
-				if (!present) {
-					return false;
-				}
-				break;
+	Case testCase = CaseList::caseList[testIdx];
+	int formIdx = 0;
+
+	for (int i = 0; i < testCase.validFormCount; i++) {
+		if (_forms[formIdx] == testCase.validForms[i]) {
+			formIdx++;
 		}
 	}
-	auto end = std::chrono::high_resolution_clock::now();
-	double time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-	std::cout << time << "\n";
 
-	return true;
+	if (formIdx == _formCount) {
+		return true;
+	}
+
+	return false;
 }

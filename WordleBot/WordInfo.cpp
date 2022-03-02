@@ -13,7 +13,7 @@ WordInfo::WordInfo(std::string word) : _word(word), _score(0.0) {
 		info.addWord(_word, (State*) cases);
 		double prob = 0.0;
 		for (int i = 0; i < WordList::length; i++) {
-			info.checkWord(WordList::wordList[i]) ? prob++ : NULL;
+			info.checkWord(i) ? prob++ : NULL;
 		}
 		count += prob;
 
@@ -35,7 +35,6 @@ WordInfo::WordInfo(std::string word) : _word(word), _score(0.0) {
 			break;
 		}
 	}
-	//std::cout << count << "\n";
 }
 
 bool WordInfo::compareWordInfos(WordInfo* w1, WordInfo* w2) {

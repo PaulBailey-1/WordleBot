@@ -32,7 +32,7 @@ void CaseList::load(std::string fileName) {
 						}
 						break;
 					case State::NOT_PRESENT:
-						for (int i = 0; i < word.length(); i++) {
+						for (unsigned int i = 0; i < word.length(); i++) {
 							if (word[i] == form.letter) {
 								valid = false;
 							}
@@ -43,7 +43,7 @@ void CaseList::load(std::string fileName) {
 							valid = false;
 						}
 						bool present = false;
-						for (int i = 0; i < word.length(); i++) {
+						for (unsigned int i = 0; i < word.length(); i++) {
 							if (word[i] == form.letter) {
 								present = true;
 							}
@@ -80,6 +80,7 @@ void CaseList::load(std::string fileName) {
 			formIdx++;
 		}
 
+		aCase.validFormCount = formIdx;
 		caseList[caseIdx] = aCase;
 		caseIdx++;
 	}

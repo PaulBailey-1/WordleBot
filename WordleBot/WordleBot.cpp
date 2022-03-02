@@ -42,7 +42,13 @@ void threadRunner(int workerInx) {
         wordCalcIndex++;
         wordIdxMux.unlock();
 
+        auto start = std::chrono::high_resolution_clock::now();
+
         WordInfo* newWord = new WordInfo(word);
+
+        auto end = std::chrono::high_resolution_clock::now();
+        double time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+        std::cout << time << "\n";
 
         wordsMux.lock();
         words.push_back(newWord);
@@ -55,30 +61,30 @@ void threadRunner(int workerInx) {
 
 int main() {
 
-    WordList::load("WordList.txt");
+    WordList::load("WordList.txt", 10);
     FormList::load("FormList.txt");
     CaseList::load("CaseList.txt");
 
-    //std::cout << "Computing word information...\n";
+    std::cout << "Computing word information...\n";
 
-    //for (int i = 0; i < THREAD_COUNT; i++) {
-    //    workers[i] = std::thread(threadRunner, i);
-    //}
-    //for (std::thread& worker : workers) {
-    //    if (worker.joinable()) {
-    //        worker.join();
-    //    }
-    //}
+    for (int i = 0; i < THREAD_COUNT; i++) {
+        workers[i] = std::thread(threadRunner, i);
+    }
+    for (std::thread& worker : workers) {
+        if (worker.joinable()) {
+            worker.join();
+        }
+    }
 
-    //std::cout << "Done\n";
+    std::cout << "Done\n";
 
-    //std::cout << "Sorting words...\n";
-    //std::sort(words.begin(), words.end(), WordInfo::compareWordInfos);
-    //std::cout << "Done\n";
+    std::cout << "Sorting words...\n";
+    std::sort(words.begin(), words.end(), WordInfo::compareWordInfos);
+    std::cout << "Done\n";
 
-    //for (int i = 0; i < (words.size() < 10 ? words.size() : 10); i++) {
-    //    std::cout << words[i]->getWord() << " - " << words[i]->getScore() << "\n";
-    //}
+    for (int i = 0; i < (words.size() < 10 ? words.size() : 10); i++) {
+        std::cout << words[i]->getWord() << " - " << words[i]->getScore() << "\n";
+    }
 
     return 0;
 }
