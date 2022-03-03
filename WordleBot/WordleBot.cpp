@@ -11,7 +11,7 @@
 #include "WordList.h"
 #include "CaseList.h"
 
-const int THREAD_COUNT = 1;
+const int THREAD_COUNT = 4;
 
 std::thread workers[THREAD_COUNT];
 std::vector<WordInfo*> words;
@@ -42,13 +42,7 @@ void threadRunner(int workerInx) {
         wordCalcIndex++;
         wordIdxMux.unlock();
 
-        auto start = std::chrono::high_resolution_clock::now();
-
         WordInfo* newWord = new WordInfo(word);
-
-        auto end = std::chrono::high_resolution_clock::now();
-        double time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-        std::cout << time << "\n";
 
         wordsMux.lock();
         words.push_back(newWord);
@@ -61,11 +55,12 @@ void threadRunner(int workerInx) {
 
 int main() {
 
-    WordList::load("WordList.txt", 10);
+    WordList::load("WordList.txt", 500);
     FormList::load("FormList.txt");
-    CaseList::load("CaseList.txt");
+    CaseList::load("CaseList.txt", true);
 
     std::cout << "Computing word information...\n";
+    auto start = std::chrono::high_resolution_clock::now();
 
     for (int i = 0; i < THREAD_COUNT; i++) {
         workers[i] = std::thread(threadRunner, i);
@@ -76,7 +71,10 @@ int main() {
         }
     }
 
-    std::cout << "Done\n";
+    auto end = std::chrono::high_resolution_clock::now();
+    double time = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+    std::cout << "Done - " << time << "\n";
 
     std::cout << "Sorting words...\n";
     std::sort(words.begin(), words.end(), WordInfo::compareWordInfos);

@@ -16,7 +16,7 @@ class CaseList
 {
 public:
 
-	static void load(std::string fileName);
+	static void load(std::string fileName, bool reload);
 
 	static Case caseList[WORD_COUNT];
 

@@ -4,11 +4,11 @@
 
 Case CaseList::caseList[WORD_COUNT];
 
-void CaseList::load(std::string fileName) {
+void CaseList::load(std::string fileName, bool reload) {
 
     std::ifstream caseListFileIn(fileName);
 
-    if(!caseListFileIn.good()) {
+    if(!caseListFileIn.good() || reload) {
 
         std::cout << "Creating Cases...\n";
 
