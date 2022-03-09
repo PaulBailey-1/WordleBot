@@ -23,10 +23,12 @@ std::mutex wordsMux;
 std::mutex coutMux;
 
 void threadRunner(int workerInx) {
-    std::thread::id id = workers[workerInx].get_id();
-    coutMux.lock();
-    std::cout << "Thread started - " << id << "\n";
-    coutMux.unlock();
+
+    //std::thread::id id = workers[workerInx].get_id();
+    //coutMux.lock();
+    //std::cout << "Thread started - " << id << "\n";
+    //coutMux.unlock();
+
     while (true) {
 
         wordsMux.lock();
@@ -48,16 +50,18 @@ void threadRunner(int workerInx) {
         words.push_back(newWord);
         wordsMux.unlock();
     }
-    coutMux.lock();
-    std::cout << "Thread ended - " << id << "\n";
-    coutMux.unlock();
+    //coutMux.lock();
+    //std::cout << "Thread ended - " << id << "\n";
+    //coutMux.unlock();
 }
 
 int main() {
 
-    WordList::load("WordList.txt", 500);
+    WordList::load("WordList.txt", 100);
     FormList::load("FormList.txt");
     CaseList::load("CaseList.txt", true);
+
+    WordInfo::generateCases();
 
     std::cout << "Computing word information...\n";
     auto start = std::chrono::high_resolution_clock::now();

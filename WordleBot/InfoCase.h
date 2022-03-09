@@ -16,6 +16,8 @@ public:
 	InfoCase();
 	
 	void addWord(std::string word, State data[]);
+	void clear();
+
 	bool checkWord(int testIdx);
 
 private:

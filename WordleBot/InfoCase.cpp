@@ -13,6 +13,10 @@ void InfoCase::addWord(std::string word, State data[]) {
 	std::sort(_forms, _forms + _formCount);
 }
 
+void InfoCase::clear() {
+	_formCount = 0;
+}
+
 bool InfoCase::checkWord(int testIdx) {
 
 	Case testCase = CaseList::caseList[testIdx];
