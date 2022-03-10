@@ -19,17 +19,19 @@ void InfoCase::clear() {
 
 bool InfoCase::checkWord(int testIdx) {
 
-	Case testCase = CaseList::caseList[testIdx];
+	static Case* testCase;
+	testCase = &CaseList::caseList[testIdx];
 	int formIdx = 0;
 
-	for (int i = 0; i < testCase.validFormCount; i++) {
-		if (_forms[formIdx] == testCase.validForms[i]) {
+	for (int i = 0; i < testCase->validFormCount; i++) {
+
+		if (_forms[formIdx] == testCase->validForms[i]) {
 			formIdx++;
 		}
-	}
 
-	if (formIdx == _formCount) {
-		return true;
+		if (formIdx == _formCount) {
+			return true;
+		}
 	}
 
 	return false;

@@ -24,4 +24,5 @@ private:
 
 	int _forms[MAX_FORMS];
 	int _formCount;
+
 };

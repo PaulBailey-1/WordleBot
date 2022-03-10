@@ -8,22 +8,15 @@ WordInfo::WordInfo(std::string word) : _word(word), _score(0.0) {
 
 	InfoCase info;
 
-	double time1 = 0.0;
-
 	for (int i = 0; i < 243; i++) {
 
 		info.clear();
 		prob = 0.0;
 		info.addWord(_word, (State*) cases[i]);
 
-		auto start = std::chrono::high_resolution_clock::now();
-
 		for (int i = 0; i < WordList::length; i++) {
 			info.checkWord(i) ? prob++ : NULL;
 		}
-
-		auto end = std::chrono::high_resolution_clock::now();
-		time1 += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
 		if (prob != 0.0) {
 			prob /= WordList::length;
@@ -32,10 +25,6 @@ WordInfo::WordInfo(std::string word) : _word(word), _score(0.0) {
 		}
 
 	}
-
-	time1 /= 243;
-
-	std::cout << time1 << "\n";
 }
 
 void WordInfo::generateCases() {
